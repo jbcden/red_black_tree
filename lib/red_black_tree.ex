@@ -272,7 +272,7 @@ defmodule RedBlackTree do
   # integers.
   # If these two collide, go home.
   defp fallback_term_hash(term) do
-    :erlang.phash(term, @key_hash_bucket)
+    :erlang.phash2(term, @key_hash_bucket)
   end
 
   ### Operations
@@ -635,8 +635,9 @@ end
 
 defimpl Enumerable, for: RedBlackTree do
   def count(%RedBlackTree{size: size}), do: size
-  def member?(%RedBlackTree{}=tree, key), do: RedBlackTree.has_key?(tree, key)
+  def member?(%RedBlackTree{}=tree, key), do: {:ok, RedBlackTree.has_key?(tree, key)}
   def reduce(tree, acc, fun), do: RedBlackTree.reduce(tree, acc, fun)
+  def slice(_), do: {:error, __MODULE__}
 end
 
 defimpl Collectable, for: RedBlackTree do
